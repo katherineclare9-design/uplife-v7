@@ -692,11 +692,30 @@ ${userData.streak} Days
 
 
 
-
-
-
 <div class="card">
 
+
+<h2>🔥 Daily Check-In</h2>
+
+
+<p>
+
+Complete your UpLift day to grow your streak!
+
+</p>
+
+
+
+
+<button onclick="completeUpLiftDay()">
+
+🔥 Complete UpLift Day
+
+</button>
+
+
+
+</div>
 
 <h2>🥗 Daily Nutrition</h2>
 
