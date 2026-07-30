@@ -27,8 +27,6 @@ const streakBadges = {
     },
 
 
-
-
     weekWarrior: {
 
         name: "Week Warrior",
@@ -48,9 +46,6 @@ const streakBadges = {
         requirement: () => userData.streak >= 7
 
     },
-
-
-
 
 
     twoWeekTitan: {
@@ -74,10 +69,6 @@ const streakBadges = {
     },
 
 
-
-
-
-
     monthlyMachine: {
 
         name: "Monthly Machine",
@@ -99,10 +90,6 @@ const streakBadges = {
     },
 
 
-
-
-
-
     centuryLegend: {
 
         name: "Century Legend",
@@ -120,6 +107,111 @@ const streakBadges = {
         progress: () => userData.streak,
 
         requirement: () => userData.streak >= 100
+
+    },
+
+
+    streakMaster: {
+
+        name: "Streak Master",
+
+        icon: "💎",
+
+        description: "Maintain a 60 day UpLift streak.",
+
+        category: "Streak",
+
+        rarity: "Epic",
+
+        goal: 60,
+
+        progress: () => userData.streak,
+
+        requirement: () => userData.streak >= 60
+
+    },
+
+
+    unstoppable: {
+
+        name: "Unstoppable",
+
+        icon: "🚀",
+
+        description: "Maintain a 180 day UpLift streak.",
+
+        category: "Streak",
+
+        rarity: "Mythic",
+
+        goal: 180,
+
+        progress: () => userData.streak,
+
+        requirement: () => userData.streak >= 180
+
+    },
+
+
+    halfYearHero: {
+
+        name: "Half Year Hero",
+
+        icon: "🌟",
+
+        description: "Maintain a 365 day UpLift streak.",
+
+        category: "Streak",
+
+        rarity: "Mythic",
+
+        goal: 365,
+
+        progress: () => userData.streak,
+
+        requirement: () => userData.streak >= 365
+
+    },
+
+
+    eternalFlame: {
+
+        name: "Eternal Flame",
+
+        icon: "🔥",
+
+        description: "Maintain a 500 day UpLift streak.",
+
+        category: "Streak",
+
+        rarity: "Legendary",
+
+        goal: 500,
+
+        progress: () => userData.streak,
+
+        requirement: () => userData.streak >= 500
+
+    },
+
+
+    streakLegend: {
+
+        name: "Streak Legend",
+
+        icon: "👑",
+
+        description: "Maintain a 1000 day UpLift streak.",
+
+        category: "Streak",
+
+        rarity: "Mythic",
+
+        goal: 1000,
+
+        progress: () => userData.streak,
+
+        requirement: () => userData.streak >= 1000
 
     }
 
