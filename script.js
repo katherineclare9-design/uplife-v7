@@ -675,24 +675,61 @@ ${userData.xp}/${userData.xpToNextLevel} XP
 
 
 <div class="card">
+<div class="card">
 
 
-<h2>🔥 Streak</h2>
+<h2>🔥 ${userData.streak} Day Streak</h2>
+
 
 
 <p>
 
-${userData.streak} Days
+Keep showing up 💪
+
+</p>
+
+
+
+<p>
+
+🏆 Best Streak:
+
+${userData.longestStreak}
+
+Days
+
+</p>
+
+
+
+<p>
+
+Next Milestone:
+
+${
+    userData.streak < 3
+    ?
+    "🌱 3 Days"
+    :
+    userData.streak < 7
+    ?
+    "🔥 7 Days"
+    :
+    userData.streak < 14
+    ?
+    "⚡ 14 Days"
+    :
+    userData.streak < 30
+    ?
+    "🏆 30 Days"
+    :
+    "👑 100 Days"
+}
 
 </p>
 
 
 </div>
-
-
-
-
-<div class="card">
 
 
 <h2>🔥 Daily Check-In</h2>
