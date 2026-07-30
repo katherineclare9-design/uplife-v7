@@ -2,9 +2,11 @@
 // UpLift Special Achievement Badges
 // =====================
 
-
 const specialBadges = {
 
+    // =====================
+    // Getting Started
+    // =====================
 
     firstStep: {
 
@@ -14,7 +16,7 @@ const specialBadges = {
 
         description: "Complete your first workout.",
 
-        category: "Special",
+        category: "Getting Started",
 
         rarity: "Common",
 
@@ -28,8 +30,6 @@ const specialBadges = {
 
 
 
-
-
     fiveWorkouts: {
 
         name: "Building Momentum",
@@ -38,7 +38,7 @@ const specialBadges = {
 
         description: "Complete 5 workouts.",
 
-        category: "Special",
+        category: "Getting Started",
 
         rarity: "Common",
 
@@ -52,6 +52,26 @@ const specialBadges = {
 
 
 
+    tenWorkouts: {
+
+        name: "Committed Athlete",
+
+        icon: "🏅",
+
+        description: "Complete 10 workouts.",
+
+        category: "Getting Started",
+
+        rarity: "Rare",
+
+        goal: 10,
+
+        progress: () => userData.workoutsCompleted,
+
+        requirement: () => userData.workoutsCompleted >= 10
+
+    },
+
 
 
     dedicatedAthlete: {
@@ -62,7 +82,7 @@ const specialBadges = {
 
         description: "Complete 50 workouts.",
 
-        category: "Special",
+        category: "Getting Started",
 
         rarity: "Legendary",
 
@@ -76,7 +96,9 @@ const specialBadges = {
 
 
 
-
+    // =====================
+    // Special
+    // =====================
 
     levelTen: {
 
