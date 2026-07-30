@@ -1,241 +1,147 @@
- // =====================
-// UpLift User Data v5.0
-// Nutrition + Athlete Diary Upgrade
-// =====================
+/* =====================
+   USER DATA
+===================== */
 
 
-const defaultUserData = {
+let userData = {
 
 
-// =====================
-// PROFILE
-// =====================
+    // =====================
+    // PROFILE
+    // =====================
 
 
-profileCreated:false,
+    profileCreated:false,
 
-profileName:"",
+    profileName:"",
 
-athleteType:"",
+    athleteType:"",
 
-goal:"",
+    goal:"",
 
-profileDate:"",
+    profileDate:"",
 
 
 
 
+    // =====================
+    // SETTINGS
+    // =====================
 
 
-// =====================
-// SETTINGS
-// =====================
+    mode:"Regular",
 
+    arfidSupport:false,
 
-mode:"Regular",
 
-arfidSupport:false,
 
 
 
+    // =====================
+    // XP / LEVEL
+    // =====================
 
 
+    xp:0,
 
+    level:1,
 
+    xpToNextLevel:100,
 
-// =====================
-// XP + LEVEL SYSTEM
-// =====================
 
 
-xp:0,
 
-level:1,
 
-xpToNextLevel:100,
+    // =====================
+    // WORKOUT STATS
+    // =====================
 
-streak:0,
 
+    workoutsCompleted:0,
 
+    coreWorkouts:0,
 
+    strengthWorkouts:0,
 
+    backspotWorkouts:0,
 
+    flexibilitySessions:0,
 
+    lowerBodyWorkouts:0,
 
+    upperBodyWorkouts:0,
 
-// =====================
-// WORKOUT PROGRESS
-// =====================
+    jumpSessions:0,
 
 
-workoutsCompleted:0,
 
 
-completedToday:[],
 
+    completedToday:[],
 
-completedDate:"",
 
 
 
 
+    // =====================
+    // NUTRITION
+    // =====================
 
 
-coreWorkouts:0,
+    nutritionXP:0,
 
+    nutritionEntries:[],
 
-strengthWorkouts:0,
+    caloriesToday:0,
 
 
-backspotWorkouts:0,
 
+    waterToday:0,
 
-flexibilitySessions:0,
+    waterGoal:8,
 
 
-lowerBodyWorkouts:0,
 
 
-upperBodyWorkouts:0,
 
+    // =====================
+    // DIARY
+    // =====================
 
-jumpSessions:0,
 
+    diaryEntries:[],
 
+    selectedDiaryDate:"",
 
 
 
 
 
+    // =====================
+    // STREAKS
+    // =====================
 
-// =====================
-// BADGES
-// =====================
 
+    streak:0,
 
-unlockedBadges:[],
+    lastActiveDate:"",
 
 
-badgeDates:{},
 
 
 
+    // =====================
+    // BADGES
+    // =====================
 
 
-
-
-
-
-// =====================
-// NUTRITION SYSTEM
-// =====================
-
-
-// calories logged today
-
-caloriesToday:0,
-
-
-
-// water tracking
-
-waterToday:0,
-
-waterGoal:8,
-
-
-
-// every food entry
-
-nutritionEntries:[],
-
-
-
-// quick add meals
-
-savedMeals:[],
-
-
-
-// ARFID support lists
-
-safeFoods:[],
-
-favoriteFoods:[],
-
-foodsToTry:[],
-
-
-
-// notes
-
-nutritionNotes:"",
-
-
-
-
-
-
-
-// =====================
-// ATHLETE DIARY
-// =====================
-
-
-// Every important action goes here
-//
-// Example:
-//
-// {
-//   date:"7/29/2026",
-//   type:"nutrition",
-//   title:"Chicken Bowl",
-//   details:"600 calories",
-//   xp:10
-// }
-
-
-diaryEntries:[],
-
-
-
-// Allows date selection later
-
-selectedDiaryDate:"",
-
-
-
-
-
-
-
-// =====================
-// NUTRITION XP
-// =====================
-
-
-nutritionXP:0,
-
-
-nutritionStreak:0,
-
-
-lastNutritionDate:""
-
+    unlockedBadges:[],
 
 
 
 };
-// =====================
-// LOAD USER DATA
-// =====================
 
 
-let userData = JSON.parse(
-
-    localStorage.getItem("upliftData")
-
-) || {};
 
 
 
@@ -244,18 +150,714 @@ let userData = JSON.parse(
 
 
 // =====================
-// ADD MISSING FIELDS
-// Keeps old saves working
+// BADGE LIBRARY
 // =====================
 
 
-for(const key in defaultUserData){
+const badges = {
 
 
-    if(!(key in userData)){
+
+/* =====================
+   TRAINING
+===================== */
 
 
-        userData[key] = defaultUserData[key];
+
+firstWorkout:{
+
+    name:"First Full Out",
+
+    icon:"⭐",
+
+    category:"Training",
+
+    description:"Complete your first workout",
+
+    goal:1,
+
+    reward:25,
+
+    rarity:"Starter"
+
+},
+
+
+
+
+coreCrusher:{
+
+    name:"Core Crusher",
+
+    icon:"🔥",
+
+    category:"Training",
+
+    description:"Complete 25 core workouts",
+
+    goal:25,
+
+    reward:100,
+
+    rarity:"Bronze"
+
+},
+
+
+
+
+strengthBuilder:{
+
+    name:"Strength Builder",
+
+    icon:"🏋️",
+
+    category:"Training",
+
+    description:"Complete 50 strength workouts",
+
+    goal:50,
+
+    reward:250,
+
+    rarity:"Gold"
+
+},
+
+
+
+
+backspotBoss:{
+
+    name:"Backspot Boss",
+
+    icon:"🪽",
+
+    category:"Training",
+
+    description:"Complete 25 backspot workouts",
+
+    goal:25,
+
+    reward:150,
+
+    rarity:"Silver"
+
+},
+
+
+
+
+flexibilityMaster:{
+
+    name:"Flexibility Master",
+
+    icon:"🌸",
+
+    category:"Training",
+
+    description:"Complete 50 flexibility sessions",
+
+    goal:50,
+
+    reward:250,
+
+    rarity:"Gold"
+
+},
+
+
+
+
+legDayLegend:{
+
+    name:"Leg Day Legend",
+
+    icon:"🦵",
+
+    category:"Training",
+
+    description:"Complete 50 lower body workouts",
+
+    goal:50,
+
+    reward:200,
+
+    rarity:"Silver"
+
+},
+
+
+
+
+jumpSpecialist:{
+
+    name:"Jump Specialist",
+
+    icon:"🚀",
+
+    category:"Training",
+
+    description:"Complete 100 jump sessions",
+
+    goal:100,
+
+    reward:300,
+
+    rarity:"Gold"
+
+},
+
+
+/* =====================
+   NUTRITION BADGES
+===================== */
+
+
+
+firstMeal:{
+
+    name:"First Fuel",
+
+    icon:"🍎",
+
+    category:"Nutrition",
+
+    description:"Log your first meal",
+
+    goal:1,
+
+    reward:25,
+
+    rarity:"Starter"
+
+},
+
+
+
+
+nutritionExplorer:{
+
+    name:"Nutrition Explorer",
+
+    icon:"🥗",
+
+    category:"Nutrition",
+
+    description:"Log 25 meals",
+
+    goal:25,
+
+    reward:100,
+
+    rarity:"Bronze"
+
+},
+
+
+
+
+balancedAthlete:{
+
+    name:"Balanced Athlete",
+
+    icon:"🌟",
+
+    category:"Nutrition",
+
+    description:"Log nutrition for 14 days",
+
+    goal:14,
+
+    reward:300,
+
+    rarity:"Gold"
+
+},
+
+
+
+
+
+
+
+
+/* =====================
+   HYDRATION BADGES
+===================== */
+
+
+
+firstSip:{
+
+    name:"First Sip",
+
+    icon:"💧",
+
+    category:"Hydration",
+
+    description:"Log your first water cup",
+
+    goal:1,
+
+    reward:10,
+
+    rarity:"Starter"
+
+},
+
+
+
+
+hydrationHero:{
+
+    name:"Hydration Hero",
+
+    icon:"🌊",
+
+    category:"Hydration",
+
+    description:"Drink 100 cups of water",
+
+    goal:100,
+
+    reward:200,
+
+    rarity:"Silver"
+
+},
+
+
+
+
+waterWarrior:{
+
+    name:"Water Warrior",
+
+    icon:"🏄",
+
+    category:"Hydration",
+
+    description:"Hit your water goal 30 times",
+
+    goal:30,
+
+    reward:500,
+
+    rarity:"Diamond"
+
+},
+
+
+
+
+
+
+
+
+/* =====================
+   DIARY BADGES
+===================== */
+
+
+
+firstPage:{
+
+    name:"First Page",
+
+    icon:"✍️",
+
+    category:"Diary",
+
+    description:"Create your first diary entry",
+
+    goal:1,
+
+    reward:25,
+
+    rarity:"Starter"
+
+},
+
+
+
+
+memoryKeeper:{
+
+    name:"Memory Keeper",
+
+    icon:"📚",
+
+    category:"Diary",
+
+    description:"Create 50 diary entries",
+
+    goal:50,
+
+    reward:200,
+
+    rarity:"Silver"
+
+},
+
+
+
+
+consistencyQueen:{
+
+    name:"Consistency Queen",
+
+    icon:"🔥",
+
+    category:"Diary",
+
+    description:"Log something for 30 days",
+
+    goal:30,
+
+    reward:750,
+
+    rarity:"Legendary"
+
+},
+
+
+
+
+
+
+
+
+/* =====================
+   SPECIAL BADGES
+===================== */
+
+
+
+freshStart:{
+
+    name:"Fresh Start",
+
+    icon:"🌱",
+
+    category:"Special",
+
+    description:"Complete your first week on UpLift",
+
+    goal:7,
+
+    reward:100,
+
+    rarity:"Bronze"
+
+},
+
+
+
+
+resetAndRise:{
+
+    name:"Reset & Rise",
+
+    icon:"🌙",
+
+    category:"Special",
+
+    description:"Complete 7 Vacation Mode days",
+
+    goal:7,
+
+    reward:150,
+
+    rarity:"Silver"
+
+},
+
+
+
+
+strongThroughIt:{
+
+    name:"Strong Through It",
+
+    icon:"❤️",
+
+    category:"Special",
+
+    description:"Complete 5 Period Mode logs",
+
+    goal:5,
+
+    reward:150,
+
+    rarity:"Silver"
+
+},
+
+
+
+
+fullCircle:{
+
+    name:"Full Circle",
+
+    icon:"🏆",
+
+    category:"Special",
+
+    description:"Complete workout, nutrition, water, and diary in one day",
+
+    goal:1,
+
+    reward:50,
+
+    rarity:"Gold"
+
+},
+
+
+
+
+
+
+
+
+/* =====================
+   ELITE BADGES
+===================== */
+
+
+
+upliftChampion:{
+
+    name:"UpLift Champion",
+
+    icon:"👑",
+
+    category:"Elite",
+
+    description:"Reach Level 10 with 100 workouts and 50 diary entries",
+
+    goal:1,
+
+    reward:1000,
+
+    rarity:"Legendary"
+
+},
+
+
+
+
+diamondAthlete:{
+
+    name:"Diamond Athlete",
+
+    icon:"💎",
+
+    category:"Elite",
+
+    description:"Earn 50 badges",
+
+    goal:50,
+
+    reward:750,
+
+    rarity:"Diamond"
+
+}
+
+
+
+};
+/* =====================
+   BADGE FUNCTIONS
+===================== */
+
+
+
+function getBadgeProgress(id){
+
+
+    const badge = badges[id];
+
+
+    if(!badge){
+
+        return 0;
+
+    }
+
+
+
+
+    switch(id){
+
+
+
+        // TRAINING
+
+        case "firstWorkout":
+
+            return userData.workoutsCompleted;
+
+
+
+        case "coreCrusher":
+
+            return userData.coreWorkouts;
+
+
+
+        case "strengthBuilder":
+
+            return userData.strengthWorkouts;
+
+
+
+        case "backspotBoss":
+
+            return userData.backspotWorkouts;
+
+
+
+        case "flexibilityMaster":
+
+            return userData.flexibilitySessions;
+
+
+
+        case "legDayLegend":
+
+            return userData.lowerBodyWorkouts;
+
+
+
+        case "jumpSpecialist":
+
+            return userData.jumpSessions;
+
+
+
+
+
+
+
+        // NUTRITION
+
+
+        case "firstMeal":
+
+        case "nutritionExplorer":
+
+            return userData.nutritionEntries.length;
+
+
+
+        case "balancedAthlete":
+
+            return userData.nutritionStreak || 0;
+
+
+
+
+
+
+
+
+        // WATER
+
+
+        case "firstSip":
+
+            return userData.waterTotal || 0;
+
+
+
+        case "hydrationHero":
+
+            return userData.waterTotal || 0;
+
+
+
+        case "waterWarrior":
+
+            return userData.waterGoalHits || 0;
+
+
+
+
+
+
+
+
+        // DIARY
+
+
+        case "firstPage":
+
+        case "memoryKeeper":
+
+            return userData.diaryEntries.length;
+
+
+
+        case "consistencyQueen":
+
+            return userData.streak;
+
+
+
+
+
+
+
+
+        // SPECIAL
+
+
+        case "freshStart":
+
+            return userData.streak;
+
+
+
+        case "resetAndRise":
+
+            return userData.vacationDays || 0;
+
+
+
+        case "strongThroughIt":
+
+            return userData.periodLogs || 0;
+
+
+
+        case "fullCircle":
+
+            return userData.fullCircleDays || 0;
+
+
+
+
+
+
+
+
+        // ELITE
+
+
+        case "diamondAthlete":
+
+            return userData.unlockedBadges.length;
+
+
+
+        default:
+
+            return 0;
+
 
 
     }
@@ -269,29 +871,51 @@ for(const key in defaultUserData){
 
 
 
+
+
+
 // =====================
-// DAILY RESET CHECK
+// CHECK BADGES
 // =====================
 
 
-const today = new Date().toLocaleDateString();
+
+function checkBadges(){
+
+
+
+    Object.keys(badges).forEach(id=>{
+
+
+
+        const badge = badges[id];
+
+
+
+        const progress = getBadgeProgress(id);
 
 
 
 
+        if(
+
+            progress >= badge.goal &&
+
+            !userData.unlockedBadges.includes(id)
+
+        ){
 
 
-// Reset workout checklist
 
-
-if(userData.completedDate !== today){
+            unlockBadge(id);
 
 
 
-    userData.completedToday = [];
+        }
 
 
-    userData.completedDate = today;
+
+    });
 
 
 
@@ -303,22 +927,46 @@ if(userData.completedDate !== today){
 
 
 
-// Reset nutrition totals
 
 
-if(userData.lastNutritionDate !== today){
-
-
-
-    userData.caloriesToday = 0;
+// =====================
+// UNLOCK BADGE
+// =====================
 
 
 
-    userData.waterToday = 0;
+function unlockBadge(id){
 
 
 
-    userData.lastNutritionDate = today;
+    const badge = badges[id];
+
+
+
+    if(!badge){
+
+        return;
+
+    }
+
+
+
+
+    userData.unlockedBadges.push(id);
+
+
+
+    userData.xp += badge.reward;
+
+
+
+    checkLevelUp();
+
+
+
+
+    saveUserData();
+
 
 
 
@@ -331,9 +979,86 @@ if(userData.lastNutritionDate !== today){
 
 
 
+
 // =====================
-// SAVE USER DATA
+// LEVEL SYSTEM
 // =====================
+
+
+
+function addXP(amount){
+
+
+
+    userData.xp += amount;
+
+
+
+    checkLevelUp();
+
+
+
+    checkBadges();
+
+
+
+    saveUserData();
+
+
+
+}
+
+
+
+
+
+
+
+
+function checkLevelUp(){
+
+
+
+    while(
+
+        userData.xp >= userData.xpToNextLevel
+
+    ){
+
+
+
+        userData.xp -= userData.xpToNextLevel;
+
+
+
+        userData.level++;
+
+
+
+        userData.xpToNextLevel =
+
+        userData.level * 100;
+
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================
+// SAVE DATA
+// =====================
+
 
 
 function saveUserData(){
@@ -342,7 +1067,7 @@ function saveUserData(){
 
     localStorage.setItem(
 
-        "upliftData",
+        "upliftUserData",
 
         JSON.stringify(userData)
 
@@ -358,288 +1083,40 @@ function saveUserData(){
 
 
 
-// =====================
-// XP SYSTEM
-// =====================
-
-
-function addXP(amount){
-
-
-
-    userData.xp += amount;
-
-
-
-
-    while(userData.xp >= userData.xpToNextLevel){
-
-
-
-        userData.xp -= userData.xpToNextLevel;
-
-
-
-        userData.level++;
-
-
-
-        userData.xpToNextLevel += 100;
-
-
-
-    }
-
-
-
-}
-
-
-
-
-
 
 
 // =====================
-// DIARY DATA FORMAT
-// =====================
-//
-// Every entry uses:
-//
-// {
-//   date:"7/29/2026",
-//   type:"nutrition",
-//   title:"Chicken Bowl",
-//   details:"600 calories",
-//   xp:10
-// }
-//
-// Types:
-// nutrition
-// workout
-// achievement
-// note
-//
-// =====================
-// =====================
-// DIARY SYSTEM
+// LOAD DATA
 // =====================
 
 
-function addDiaryEntry(
-    type,
-    title,
-    details,
-    xp = 0
-){
 
+function loadUserData(){
 
 
-    userData.diaryEntries.push({
 
+    const saved =
 
-        date:new Date().toLocaleDateString(),
+    localStorage.getItem(
 
-
-        type:type,
-
-
-        title:title,
-
-
-        details:details,
-
-
-        xp:xp
-
-
-
-    });
-
-
-
-    saveUserData();
-
-
-
-}
-
-
-
-
-
-
-
-function getDiaryByDate(date){
-
-
-
-    return userData.diaryEntries.filter(entry =>
-
-        entry.date === date
-
-    );
-
-
-
-}
-
-
-
-
-
-
-
-function getAvailableDiaryDates(){
-
-
-
-    return [
-
-        ...new Set(
-
-            userData.diaryEntries.map(entry => entry.date)
-
-        )
-
-    ];
-
-
-
-}
-
-
-
-
-
-
-
-
-// =====================
-// NUTRITION SYSTEM
-// =====================
-
-
-function addNutritionXP(amount){
-
-
-
-    userData.nutritionXP += amount;
-
-
-    addXP(amount);
-
-
-
-}
-
-
-
-
-
-
-
-
-function addNutritionEntry(entry){
-
-
-
-    userData.nutritionEntries.push(entry);
-
-
-
-    userData.caloriesToday += entry.calories || 0;
-
-
-
-
-
-    addDiaryEntry(
-
-
-        "nutrition",
-
-
-        entry.food,
-
-
-        `${entry.calories} calories${
-
-            entry.note
-
-            ?
-
-            " - " + entry.note
-
-            :
-
-            ""
-
-        }`,
-
-
-        10
-
+        "upliftUserData"
 
     );
 
 
 
 
-
-    addNutritionXP(10);
-
-
-
-    updateNutritionStreak();
+    if(saved){
 
 
 
-    saveUserData();
+        userData = {
 
+            ...userData,
 
+            ...JSON.parse(saved)
 
-}
-
-
-
-
-
-
-
-
-function addWater(){
-
-
-
-    if(userData.waterToday < userData.waterGoal){
-
-
-
-        userData.waterToday++;
-
-
-
-        addDiaryEntry(
-
-
-            "nutrition",
-
-
-            "Water Added",
-
-
-            "Drank 1 cup of water",
-
-
-            5
-
-
-        );
-
-
-
-        addNutritionXP(5);
+        };
 
 
 
@@ -648,7 +1125,7 @@ function addWater(){
 
 
 
-    saveUserData();
+    checkBadges();
 
 
 
@@ -660,275 +1137,11 @@ function addWater(){
 
 
 
-// =====================
-// SAVED MEALS
-// =====================
-
-
-function saveMeal(meal){
-
-
-
-    userData.savedMeals.push(meal);
-
-
-
-    addDiaryEntry(
-
-
-        "achievement",
-
-
-        "Saved Meal Created",
-
-
-        meal.food,
-
-
-        15
-
-
-    );
-
-
-
-    addNutritionXP(15);
-
-
-
-    saveUserData();
-
-
-
-}
-
-
-
-
-
-
-
-function addSavedMeal(index){
-
-
-
-    const meal = userData.savedMeals[index];
-
-
-
-    if(!meal){
-
-        return;
-
-    }
-
-
-
-
-
-    addNutritionEntry({
-
-
-
-        food:meal.food,
-
-
-        calories:meal.calories,
-
-
-        meal:meal.meal || "Saved Meal",
-
-
-        note:"Added from saved meals"
-
-
-
-    });
-
-
-
-}
-
-
-
-
-
-
-
 
 // =====================
-// NUTRITION STREAK
+// START
 // =====================
 
 
-function updateNutritionStreak(){
 
-
-
-    const today = new Date().toLocaleDateString();
-
-
-
-    if(userData.lastNutritionDate !== today){
-
-
-
-        userData.nutritionStreak++;
-
-
-
-        userData.lastNutritionDate = today;
-
-
-
-        addNutritionXP(5);
-
-
-
-    }
-
-
-
-}
-
-
-
-
-
-
-
-
-// =====================
-// RESET PROGRESS
-// =====================
-
-
-function resetProgress(){
-
-
-
-    if(!confirm(
-
-        "Reset ALL progress? Your profile and settings will stay."
-
-    )){
-
-
-        return;
-
-
-    }
-
-
-
-
-
-
-    userData.xp = 0;
-
-
-    userData.level = 1;
-
-
-    userData.xpToNextLevel = 100;
-
-
-    userData.streak = 0;
-
-
-
-
-
-
-    userData.workoutsCompleted = 0;
-
-
-    userData.completedToday = [];
-
-
-    userData.completedDate = "";
-
-
-
-
-
-
-    userData.coreWorkouts = 0;
-
-
-    userData.strengthWorkouts = 0;
-
-
-    userData.backspotWorkouts = 0;
-
-
-    userData.flexibilitySessions = 0;
-
-
-    userData.lowerBodyWorkouts = 0;
-
-
-    userData.upperBodyWorkouts = 0;
-
-
-    userData.jumpSessions = 0;
-
-
-
-
-
-
-
-    userData.unlockedBadges = [];
-
-
-    userData.badgeDates = {};
-
-
-
-
-
-
-
-    userData.caloriesToday = 0;
-
-
-    userData.waterToday = 0;
-
-
-    userData.nutritionEntries = [];
-
-
-    userData.savedMeals = [];
-
-
-    userData.nutritionXP = 0;
-
-
-    userData.nutritionStreak = 0;
-
-
-
-
-
-
-
-    userData.diaryEntries = [];
-
-
-    userData.selectedDiaryDate = "";
-
-
-
-
-
-
-    saveUserData();
-
-
-
-    location.reload();
-
-
-
-}
+loadUserData();
