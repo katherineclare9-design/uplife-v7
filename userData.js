@@ -60,6 +60,11 @@ streak:0,
 
 lastStreakDate:"",
 
+longestStreak:0,
+
+streakHistory:[],
+lastStreakDate:"",
+
 dayCompleted:false,
 
 
