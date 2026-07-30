@@ -511,6 +511,56 @@ body.period-theme .bottom-nav button{
 ===================== */
 
 
+.badge-tabs{
+
+display:flex;
+
+gap:10px;
+
+overflow-x:auto;
+
+margin:20px 0;
+
+padding-bottom:8px;
+
+}
+
+.badge-tabs button{
+
+background:#ffe3ef;
+
+border:none;
+
+border-radius:999px;
+
+padding:10px 18px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+white-space:nowrap;
+
+transition:.2s;
+
+}
+
+.badge-tabs button:hover{
+
+transform:scale(1.05);
+
+}
+
+.badge-tabs button.active-tab{
+
+background:#ff5ca8;
+
+color:white;
+
+box-shadow:0 0 18px rgba(255,92,168,.6);
+
+}
+
 .badge-gallery{
 
     display:grid;
