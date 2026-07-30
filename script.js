@@ -619,9 +619,24 @@ function removeNutritionEntry(index){
 
 
 // =====================
-// PAGE DISPLAY
+// BADGE CATEGORY
 // =====================
 
+function changeBadgeCategory(category){
+
+    userData.selectedBadgeCategory = category;
+
+    saveUserData();
+
+    showPage("badges");
+
+}
+
+
+
+// =====================
+// PAGE DISPLAY
+// =====================
 
 function showPage(page){
 
