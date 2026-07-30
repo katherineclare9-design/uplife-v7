@@ -141,6 +141,7 @@ function createProfile(){
 
 
 
+
 // =====================
 // XP SYSTEM
 // =====================
@@ -177,7 +178,116 @@ function addXP(amount){
 
 
 
+// =====================
+// DAILY STREAK SYSTEM
+// =====================
 
+
+function completeDay(){
+
+
+
+    const today = new Date()
+    .toLocaleDateString();
+
+
+
+
+    if(userData.lastCompletedDate === today){
+
+        return;
+
+    }
+
+
+
+
+    const yesterday = new Date();
+
+
+
+    yesterday.setDate(
+
+        yesterday.getDate() - 1
+
+    );
+
+
+
+
+    const yesterdayString =
+
+    yesterday.toLocaleDateString();
+
+
+
+
+
+
+    if(
+
+        userData.lastCompletedDate === yesterdayString
+
+    ){
+
+
+        userData.streak++;
+
+
+    }
+
+    else{
+
+
+        userData.streak = 1;
+
+
+    }
+
+
+
+
+
+    userData.lastCompletedDate = today;
+
+
+    userData.completedDay = true;
+
+
+
+
+
+    addXP(25);
+
+
+
+
+
+    addDiaryEntry(
+
+        "achievement",
+
+        "Daily UpLift Complete",
+
+        "Completed today's UpLift check-in",
+
+        25
+
+    );
+
+
+
+
+
+    saveUserData();
+
+
+
+    showPage("home");
+
+
+
+}
 // =====================
 // WATER SYSTEM
 // =====================
@@ -251,6 +361,7 @@ function resetWater(){
 
 
 
+
 // =====================
 // WORKOUT COMPLETION
 // =====================
@@ -280,7 +391,9 @@ function completeWorkout(workoutName){
 
 
 
+
     const workout = workoutTypes[workoutName];
+
 
 
 
@@ -291,6 +404,7 @@ function completeWorkout(workoutName){
 
 
         addXP(workout.xp);
+
 
 
 
@@ -364,6 +478,8 @@ function completeWorkout(workoutName){
 
 
 
+
+
     addDiaryEntry(
 
         "workout",
@@ -380,6 +496,8 @@ function completeWorkout(workoutName){
 
 
 
+
+
     saveUserData();
 
 
@@ -389,6 +507,9 @@ function completeWorkout(workoutName){
 
 
 }
+
+
+
 
 
 
@@ -432,6 +553,7 @@ function addNutritionFood(){
 
 
 
+
     if(food === ""){
 
         return;
@@ -443,7 +565,10 @@ function addNutritionFood(){
 
 
 
+
+
     userData.nutritionEntries.push({
+
 
 
         food:food,
@@ -461,7 +586,9 @@ function addNutritionFood(){
         date:new Date().toLocaleDateString()
 
 
+
     });
+
 
 
 
@@ -474,7 +601,11 @@ function addNutritionFood(){
 
 
 
+
+
     addXP(10);
+
+
 
 
 
@@ -489,6 +620,7 @@ function addNutritionFood(){
         10
 
     );
+
 
 
 
@@ -572,42 +704,81 @@ function resetDiaryDate(){
 
 
 
+
 // =====================
-// REMOVE FOOD ENTRY
+// HOME PAGE UPDATE
 // =====================
 
 
-function removeNutritionEntry(index){
+// Inside your HOME section,
+// add this button under your streak card:
 
 
-    const item =
+/*
 
-    userData.nutritionEntries[index];
+<button onclick="completeDay()">
+
+🔥 Complete UpLift Day
+
+</button>
+
+*/
 
 
 
-    if(item){
+
+// =====================
+// SAVE / LOAD SAFETY
+// =====================
 
 
-        userData.caloriesToday -= item.calories || 0;
+function saveUserData(){
 
 
-        userData.nutritionEntries.splice(index,1);
+    localStorage.setItem(
 
+        "upliftUserData",
+
+        JSON.stringify(userData)
+
+    );
+
+
+}
+
+
+
+
+
+
+function loadUserData(){
+
+
+    const saved =
+
+    localStorage.getItem(
+
+        "upliftUserData"
+
+    );
+
+
+
+    if(saved){
+
+
+        Object.assign(
+
+            userData,
+
+            JSON.parse(saved)
+
+        );
 
 
     }
 
 
-
-    saveUserData();
-
-
-
-    showPage("nutrition");
-
-
-
 }
 
 
@@ -619,1489 +790,11 @@ function removeNutritionEntry(index){
 
 
 // =====================
-// PAGE DISPLAY
+// APP START
 // =====================
 
 
-function showPage(page){
-
-
-let content = "";
-
-
-
-
-
-
-
-// =====================
-// HOME
-// =====================
-
-
-if(page === "home"){
-
-
-
-content = `
-
-
-
-<h1>💖 FULL OUT</h1>
-
-
-
-
-
-<div class="card">
-
-
-<h2>⭐ Level ${userData.level}</h2>
-
-
-<p>
-
-${userData.xp}/${userData.xpToNextLevel} XP
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>🔥 Streak</h2>
-
-
-<p>
-
-${userData.streak} Days
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>🥗 Daily Nutrition</h2>
-
-
-<p>
-
-🔥 Calories: ${userData.caloriesToday}
-
-</p>
-
-
-<p>
-
-💧 Water:
-
-${userData.waterToday}/${userData.waterGoal}
-
-</p>
-
-
-</div>
-
-
-
-`;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =====================
-// NUTRITION PAGE
-// =====================
-
-
-if(page === "nutrition"){
-
-
-
-let cups = "";
-
-
-
-for(let i = 0; i < userData.waterGoal; i++){
-
-
-    cups += i < userData.waterToday
-
-    ?
-
-    "💧"
-
-    :
-
-    "⬜";
-
-
-
-}
-
-
-
-
-content = `
-
-
-
-<h1>🥗 Nutrition</h1>
-
-
-
-
-
-<div class="card">
-
-
-<h2>🔥 Calories Today</h2>
-
-
-<h1>
-
-${userData.caloriesToday}
-
-</h1>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>💧 Hydration</h2>
-
-
-
-<div class="water-display">
-
-${cups}
-
-</div>
-
-
-
-<p>
-
-${userData.waterToday}/${userData.waterGoal} cups
-
-</p>
-
-
-
-
-<button onclick="addWater()">
-
-➕ Add Cup
-
-</button>
-
-
-
-
-<button onclick="resetWater()">
-
-Reset
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>🍽️ Log Food</h2>
-
-
-
-<input
-
-id="foodName"
-
-placeholder="Food name"
-
->
-
-
-
-
-<input
-
-id="foodCalories"
-
-type="number"
-
-placeholder="Calories"
-
->
-
-
-
-
-<select id="foodMeal">
-
-
-<option>Breakfast</option>
-
-
-<option>Lunch</option>
-
-
-<option>Dinner</option>
-
-
-<option>Snack</option>
-
-
-</select>
-
-
-
-
-
-
-<textarea
-
-id="foodNote"
-
-placeholder="Notes"
-
-></textarea>
-
-
-
-
-
-
-
-
-<button onclick="addNutritionFood()">
-
-➕ Add To Diary
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>📖 Today</h2>
-
-
-<p>
-
-Your food history is saved in your Diary.
-
-</p>
-
-
-
-<button onclick="showPage('diary')">
-
-Open Diary
-
-</button>
-
-
-
-</div>
-
-
-
-`;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =====================
-// DIARY PAGE
-// =====================
-
-
-if(page === "diary"){
-
-
-
-const selected =
-
-userData.selectedDiaryDate ||
-
-new Date().toLocaleDateString();
-
-
-
-
-
-const entries =
-
-getDiaryByDate(selected);
-
-
-
-
-
-
-content = `
-
-
-
-<h1>📖 Athlete Diary</h1>
-
-
-
-
-
-
-
-<div class="card">
-
-
-<button onclick="changeDiaryDate(-1)">
-
-⬅️
-
-</button>
-
-
-
-
-<button onclick="resetDiaryDate()">
-
-Today
-
-</button>
-
-
-
-
-
-<button onclick="changeDiaryDate(1)">
-
-➡️
-
-</button>
-
-
-
-
-
-<h2>
-
-${selected}
-
-</h2>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-${
-
-entries.length === 0
-
-
-
-?
-
-
-
-`
-
-<h3>
-
-🌱 Nothing logged this day
-
-</h3>
-
-`
-
-
-
-:
-
-
-
-entries.map(entry=>`
-
-
-
-<div class="diary-entry">
-
-
-
-<h3>
-
-
-${
-
-entry.type === "nutrition"
-
-?
-
-"🥗"
-
-:
-
-entry.type === "workout"
-
-?
-
-"💪"
-
-:
-
-"⭐"
-
-}
-
-
-${entry.title}
-
-
-</h3>
-
-
-
-
-
-<p>
-
-${entry.details}
-
-</p>
-
-
-
-
-
-
-<p>
-
-⭐ +${entry.xp} XP
-
-</p>
-
-
-
-</div>
-
-
-
-`).join("")
-
-
-
-}
-
-
-
-</div>
-
-
-
-`;
-
-
-
-}
-    // =====================
-// TRAINING PAGE
-// =====================
-
-
-if(page === "training"){
-
-
-
-const days = [
-
-"Sunday",
-
-"Monday",
-
-"Tuesday",
-
-"Wednesday",
-
-"Thursday",
-
-"Friday",
-
-"Saturday"
-
-];
-
-
-
-const today = days[new Date().getDay()];
-
-
-
-
-
-if(userData.mode === "Vacation"){
-
-
-
-content = `
-
-
-
-<h1>🤍 Vacation Workout</h1>
-
-
-
-<div class="card">
-
-
-${vacationWorkouts.workout.map(item=>`
-
-
-
-<label class="workout-item">
-
-
-<input
-
-type="checkbox"
-
-${userData.completedToday.includes(item) ? "checked":""}
-
-onchange="completeWorkout('${item}')"
-
-
-
->
-
-
-<span>${item}</span>
-
-
-</label>
-
-
-
-`).join("")}
-
-
-
-</div>
-
-
-
-`;
-
-
-
-}
-
-
-
-else{
-
-
-
-const workout = dailyWorkouts[today];
-
-
-
-content = `
-
-
-
-<h1>💪 Today's Workout</h1>
-
-
-<h2>${today}</h2>
-
-
-
-
-
-
-<div class="card">
-
-
-<h3>🌅 Morning</h3>
-
-
-
-${workout.morning.map(item=>`
-
-
-
-<label class="workout-item">
-
-
-<input
-
-type="checkbox"
-
-${userData.completedToday.includes(item) ? "checked":""}
-
-onchange="completeWorkout('${item}')"
-
-
-
->
-
-
-
-<span>${item}</span>
-
-
-
-</label>
-
-
-
-`).join("")}
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h3>🌙 Night</h3>
-
-
-
-${workout.nighttime.map(item=>`
-
-
-
-<label class="workout-item">
-
-
-<input
-
-type="checkbox"
-
-${userData.completedToday.includes(item) ? "checked":""}
-
-onchange="completeWorkout('${item}')"
-
-
-
->
-
-
-
-<span>${item}</span>
-
-
-
-</label>
-
-
-
-`).join("")}
-
-
-
-</div>
-
-
-
-`;
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =====================
-// PROFILE PAGE
-// =====================
-
-
-if(page === "profile"){
-
-
-
-if(!userData.profileCreated){
-
-
-
-content = `
-
-
-
-<h1>👤 Create Profile</h1>
-
-
-
-
-<div class="card">
-
-
-<input
-
-id="profileName"
-
-placeholder="Name"
-
->
-
-
-
-
-<select id="athleteType">
-
-
-<option>Cheer Athlete</option>
-
-
-<option>Strength Athlete</option>
-
-
-<option>Flexibility Athlete</option>
-
-
-</select>
-
-
-
-
-
-
-<input
-
-id="goal"
-
-placeholder="Goal"
-
->
-
-
-
-
-<button onclick="createProfile()">
-
-
-Save Profile
-
-
-</button>
-
-
-
-</div>
-
-
-
-`;
-
-
-
-}
-
-
-
-else{
-
-
-
-content = `
-
-
-
-<h1>👤 Profile</h1>
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>
-
-${userData.profileName}
-
-</h2>
-
-
-
-<p>
-
-🤸 ${userData.athleteType}
-
-</p>
-
-
-
-<p>
-
-🎯 ${userData.goal}
-
-</p>
-
-
-
-<p>
-
-📅 Joined ${userData.profileDate}
-
-</p>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>📊 Training Stats</h2>
-
-
-
-<p>
-
-💪 Total Workouts:
-
-${userData.workoutsCompleted}
-
-</p>
-
-
-
-<hr>
-
-
-
-
-<p>
-
-🔥 Core:
-
-${userData.coreWorkouts}
-
-</p>
-
-
-
-<p>
-
-🏋️ Strength:
-
-${userData.strengthWorkouts}
-
-</p>
-
-
-
-<p>
-
-🤸 Backspot:
-
-${userData.backspotWorkouts}
-
-</p>
-
-
-
-<p>
-
-🩰 Flexibility:
-
-${userData.flexibilitySessions}
-
-</p>
-
-
-
-<p>
-
-🦵 Lower Body:
-
-${userData.lowerBodyWorkouts}
-
-</p>
-
-
-
-<p>
-
-💪 Upper Body:
-
-${userData.upperBodyWorkouts}
-
-</p>
-
-
-
-<p>
-
-⬆️ Jump Sessions:
-
-${userData.jumpSessions}
-
-</p>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>⭐ Progress</h2>
-
-
-
-<p>
-
-Level:
-
-${userData.level}
-
-</p>
-
-
-
-<p>
-
-XP:
-
-${userData.xp}/${userData.xpToNextLevel}
-
-</p>
-
-
-
-<p>
-
-🥗 Nutrition XP:
-
-${userData.nutritionXP}
-
-</p>
-
-
-
-<p>
-
-📖 Diary Entries:
-
-${userData.diaryEntries.length}
-
-</p>
-
-
-
-</div>
-
-
-
-`;
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =====================
-// TROPHY ROOM
-// =====================
-
-
-if(page === "badges"){
-
-
-
-const earned =
-
-userData.unlockedBadges.length;
-
-
-
-const total =
-
-Object.keys(badges).length;
-
-
-
-
-
-
-content = `
-
-
-
-<h1>🏆 Trophy Room</h1>
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>
-
-🏅 ${earned}/${total}
-
-</h2>
-
-
-<p>
-
-Badges Earned
-
-</p>
-
-
-
-</div>
-
-
-
-
-
-
-
-<div class="badge-gallery">
-
-
-
-${Object.keys(badges).map(id=>{
-
-
-const badge = badges[id];
-
-
-const unlocked =
-
-userData.unlockedBadges.includes(id);
-
-
-
-
-return `
-
-
-
-<div class="badge-card ${unlocked ? "unlocked":"locked"}">
-
-
-<h2>
-
-${unlocked ? badge.icon:"🔒"}
-
-</h2>
-
-
-
-
-<h3>
-
-${unlocked ? badge.name:"Locked Badge"}
-
-</h3>
-
-
-
-
-<p>
-
-${badge.description}
-
-</p>
-
-
-
-<p>
-
-⭐ ${badge.rarity}
-
-</p>
-
-
-
-</div>
-
-
-
-`;
-
-
-
-}).join("")}
-
-
-
-</div>
-
-
-
-`;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =====================
-// SETTINGS PAGE
-// =====================
-
-
-if(page === "settings"){
-
-
-
-content = `
-
-
-
-<h1>⚙️ Settings</h1>
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>🌈 App Mode</h2>
-
-
-
-
-<button onclick="changeMode('Regular')">
-
-💖 Regular
-
-</button>
-
-
-
-
-
-<button onclick="changeMode('Vacation')">
-
-🤍 Vacation
-
-</button>
-
-
-
-
-
-<button onclick="changeMode('Period')">
-
-❤️ Period
-
-</button>
-
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>🥗 Nutrition Support</h2>
-
-
-
-<label>
-
-
-<input
-
-type="checkbox"
-
-${userData.arfidSupport ? "checked":""}
-
-onclick="toggleARFID()"
-
-
-
->
-
-
-ARFID Support Mode
-
-
-</label>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<button onclick="resetProgress()">
-
-
-Reset Progress
-
-
-</button>
-
-
-
-</div>
-
-
-
-`;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =====================
-// BOTTOM NAV
-// =====================
-
-
-app.innerHTML = content + `
-
-
-
-<div class="bottom-nav">
-
-
-
-<button onclick="showPage('home')">
-
-🏠
-
-</button>
-
-
-
-
-<button onclick="showPage('training')">
-
-💪
-
-</button>
-
-
-
-
-<button onclick="showPage('nutrition')">
-
-🥗
-
-</button>
-
-
-
-
-<button onclick="showPage('diary')">
-
-📖
-
-</button>
-
-
-
-
-<button onclick="showPage('badges')">
-
-🏆
-
-</button>
-
-
-
-
-<button onclick="showPage('profile')">
-
-👤
-
-</button>
-
-
-
-
-<button onclick="showPage('settings')">
-
-⚙️
-
-</button>
-
-
-
-</div>
-
-
-
-`;
-
-
-
-}
-
-
-
-
-
-
-
-
-// =====================
-// START APP
-// =====================
+loadUserData();
 
 
 applyTheme();
