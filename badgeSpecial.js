@@ -2,11 +2,14 @@
 // UpLift Special Achievement Badges
 // =====================
 
+
 const specialBadges = {
+
 
     // =====================
     // Getting Started
     // =====================
+
 
     firstStep: {
 
@@ -27,7 +30,6 @@ const specialBadges = {
         requirement: () => userData.workoutsCompleted >= 1
 
     },
-
 
 
     fiveWorkouts: {
@@ -51,7 +53,6 @@ const specialBadges = {
     },
 
 
-
     tenWorkouts: {
 
         name: "Committed Athlete",
@@ -71,7 +72,6 @@ const specialBadges = {
         requirement: () => userData.workoutsCompleted >= 10
 
     },
-
 
 
     dedicatedAthlete: {
@@ -95,10 +95,31 @@ const specialBadges = {
     },
 
 
+    hundredWorkouts: {
+
+        name: "Century Athlete",
+
+        icon: "💪",
+
+        description: "Complete 100 workouts.",
+
+        category: "Getting Started",
+
+        rarity: "Epic",
+
+        goal: 100,
+
+        progress: () => userData.workoutsCompleted,
+
+        requirement: () => userData.workoutsCompleted >= 100
+
+    },
+
 
     // =====================
     // Special
     // =====================
+
 
     levelTen: {
 
@@ -118,6 +139,91 @@ const specialBadges = {
 
         requirement: () => userData.level >= 10
 
+    },
+
+
+    levelTwentyFive: {
+
+        name: "UpLift Veteran",
+
+        icon: "🌟",
+
+        description: "Reach Level 25.",
+
+        category: "Special",
+
+        rarity: "Legendary",
+
+        goal: 25,
+
+        progress: () => userData.level,
+
+        requirement: () => userData.level >= 25
+
+    },
+
+
+    levelFifty: {
+
+        name: "Elite UpLifter",
+
+        icon: "⚡",
+
+        description: "Reach Level 50.",
+
+        category: "Special",
+
+        rarity: "Mythic",
+
+        goal: 50,
+
+        progress: () => userData.level,
+
+        requirement: () => userData.level >= 50
+
+    },
+
+
+    ultimateCommitment: {
+
+        name: "Ultimate Commitment",
+
+        icon: "👑",
+
+        description: "Complete 365 workouts.",
+
+        category: "Special",
+
+        rarity: "Mythic",
+
+        goal: 365,
+
+        progress: () => userData.workoutsCompleted,
+
+        requirement: () => userData.workoutsCompleted >= 365
+
+    },
+
+
+    upliftLegend: {
+
+        name: "UpLift Legend",
+
+        icon: "💎",
+
+        description: "Reach Level 100.",
+
+        category: "Special",
+
+        rarity: "Mythic",
+
+        goal: 100,
+
+        progress: () => userData.level,
+
+        requirement: () => userData.level >= 100
+
     }
+
 
 };
