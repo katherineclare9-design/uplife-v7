@@ -1,18 +1,32 @@
 // =====================
-// UpLift Daily Streak System
+// UpLift Daily Streak System v2
 // =====================
 
 
 function canCompleteDay(){
 
-    return (
-        userData.completedToday.length > 0 ||
-        userData.nutritionEntries.some(
-            entry => entry.date === new Date().toLocaleDateString()
-        )
+
+    const today = new Date().toLocaleDateString();
+
+
+
+    const completedWorkout =
+    userData.completedToday.length > 0;
+
+
+
+    const loggedNutrition =
+    userData.nutritionEntries.some(
+        entry => entry.date === today
     );
 
+
+
+    return completedWorkout || loggedNutrition;
+
+
 }
+
 
 
 
@@ -21,15 +35,21 @@ function canCompleteDay(){
 function completeUpLiftDay(){
 
 
-    const today = new Date().toLocaleDateString();
+    const today =
+    new Date().toLocaleDateString();
 
 
 
     if(userData.lastStreakDate === today){
 
-        alert("🔥 You already completed UpLift today!");
+
+        alert(
+            "🔥 You already completed UpLift today!"
+        );
+
 
         return;
+
 
     }
 
@@ -57,9 +77,11 @@ function completeUpLiftDay(){
 
     const yesterday = new Date();
 
+
     yesterday.setDate(
         yesterday.getDate() - 1
     );
+
 
 
     const yesterdayString =
@@ -71,17 +93,63 @@ function completeUpLiftDay(){
 
 
 
+    let previousStreak =
+    userData.streak;
+
+
+
+
+
+
+
     if(userData.lastStreakDate === yesterdayString){
+
+
 
         userData.streak++;
 
+
+
     }
+
 
     else{
 
+
+        if(userData.streak > userData.longestStreak){
+
+
+            userData.longestStreak =
+            userData.streak;
+
+
+        }
+
+
+
+
         userData.streak = 1;
 
+
     }
+
+
+
+
+
+
+
+
+
+    if(userData.streak > userData.longestStreak){
+
+
+        userData.longestStreak =
+        userData.streak;
+
+
+    }
+
 
 
 
@@ -95,7 +163,27 @@ function completeUpLiftDay(){
 
 
 
+    userData.streakHistory.push({
+
+
+        date:today,
+
+
+        streak:userData.streak
+
+
+    });
+
+
+
+
+
+
+
+
+
     addXP(25);
+
 
 
 
@@ -104,13 +192,18 @@ function completeUpLiftDay(){
 
     addDiaryEntry(
 
+
         "achievement",
+
 
         "UpLift Day Completed",
 
-        "Daily streak increased",
+
+        `🔥 ${userData.streak} day streak`,
+
 
         25
+
 
     );
 
@@ -119,7 +212,9 @@ function completeUpLiftDay(){
 
 
 
+
     saveUserData();
+
 
 
 
