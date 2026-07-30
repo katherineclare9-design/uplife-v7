@@ -3,14 +3,27 @@
 // =====================
 
 
+function canCompleteDay(){
+
+    return (
+        userData.completedToday.length > 0 ||
+        userData.nutritionEntries.some(
+            entry => entry.date === new Date().toLocaleDateString()
+        )
+    );
+
+}
+
+
+
+
+
 function completeUpLiftDay(){
 
 
     const today = new Date().toLocaleDateString();
 
 
-
-    // Prevent multiple streak increases in one day
 
     if(userData.lastStreakDate === today){
 
@@ -23,12 +36,30 @@ function completeUpLiftDay(){
 
 
 
+
+    if(!canCompleteDay()){
+
+
+        alert(
+            "Complete a workout or log nutrition first! 💪🥗"
+        );
+
+
+        return;
+
+
+    }
+
+
+
+
+
+
     const yesterday = new Date();
 
     yesterday.setDate(
         yesterday.getDate() - 1
     );
-
 
 
     const yesterdayString =
@@ -39,16 +70,12 @@ function completeUpLiftDay(){
 
 
 
-    // Continue streak
 
     if(userData.lastStreakDate === yesterdayString){
 
         userData.streak++;
 
     }
-
-
-    // Start new streak
 
     else{
 
@@ -60,17 +87,18 @@ function completeUpLiftDay(){
 
 
 
+
     userData.lastStreakDate = today;
 
-
-
-    userData.dayCompleted = true;
 
 
 
 
 
     addXP(25);
+
+
+
 
 
 
@@ -85,6 +113,8 @@ function completeUpLiftDay(){
         25
 
     );
+
+
 
 
 
