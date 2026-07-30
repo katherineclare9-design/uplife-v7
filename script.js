@@ -2,7 +2,6 @@ const app = document.getElementById("app");
 
 
 
-
 // =====================
 // SETTINGS
 // =====================
@@ -39,8 +38,6 @@ function toggleARFID(){
 
 
 
-
-
 function applyTheme(){
 
     document.body.className = "";
@@ -68,7 +65,6 @@ function applyTheme(){
 
 
 }
-
 
 
 
@@ -137,7 +133,6 @@ function createProfile(){
 
 
 }
-
 
 
 
@@ -235,9 +230,6 @@ function addWater(){
 
 
 
-
-
-
 function resetWater(){
 
 
@@ -251,7 +243,6 @@ function resetWater(){
 
 
 }
-
 
 
 
@@ -368,9 +359,283 @@ function completeWorkout(workoutName){
 
 
     }
-    
+
+
+
+
+
+    addDiaryEntry(
+
+        "workout",
+
+        workoutName,
+
+        "Completed workout",
+
+        workout ? workout.xp : 0
+
+    );
+
+
+
+
+
+    saveUserData();
+
+
+
+    checkBadges();
+
+
+
+}
+
+
+
+
+
+
+
+
 // =====================
-// HOME PAGE
+// NUTRITION
+// =====================
+
+
+function addNutritionFood(){
+
+
+
+    const food =
+
+    document.getElementById("foodName").value;
+
+
+
+    const calories =
+
+    Number(document.getElementById("foodCalories").value) || 0;
+
+
+
+    const meal =
+
+    document.getElementById("foodMeal").value;
+
+
+
+    const note =
+
+    document.getElementById("foodNote").value;
+
+
+
+
+
+    if(food === ""){
+
+        return;
+
+    }
+
+
+
+
+
+
+    userData.nutritionEntries.push({
+
+
+        food:food,
+
+
+        calories:calories,
+
+
+        meal:meal,
+
+
+        note:note,
+
+
+        date:new Date().toLocaleDateString()
+
+
+    });
+
+
+
+
+
+
+    userData.caloriesToday += calories;
+
+
+
+
+
+    addXP(10);
+
+
+
+    addDiaryEntry(
+
+        "nutrition",
+
+        food,
+
+        `${meal} • ${calories} calories`,
+
+        10
+
+    );
+
+
+
+
+
+    saveUserData();
+
+
+
+    showPage("nutrition");
+
+
+}
+// =====================
+// DIARY CONTROLS
+// =====================
+
+
+function changeDiaryDate(amount){
+
+
+    let current = new Date(
+
+        userData.selectedDiaryDate || new Date()
+
+    );
+
+
+    current.setDate(
+
+        current.getDate() + amount
+
+    );
+
+
+
+    userData.selectedDiaryDate =
+
+    current.toLocaleDateString();
+
+
+
+    saveUserData();
+
+
+
+    showPage("diary");
+
+
+
+}
+
+
+
+
+
+
+function resetDiaryDate(){
+
+
+    userData.selectedDiaryDate =
+
+    new Date().toLocaleDateString();
+
+
+
+    saveUserData();
+
+
+
+    showPage("diary");
+
+
+
+}
+
+
+
+
+
+
+
+
+// =====================
+// REMOVE FOOD ENTRY
+// =====================
+
+
+function removeNutritionEntry(index){
+
+
+    const item =
+
+    userData.nutritionEntries[index];
+
+
+
+    if(item){
+
+
+        userData.caloriesToday -= item.calories || 0;
+
+
+        userData.nutritionEntries.splice(index,1);
+
+
+
+    }
+
+
+
+    saveUserData();
+
+
+
+    showPage("nutrition");
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================
+// PAGE DISPLAY
+// =====================
+
+
+function showPage(page){
+
+
+let content = "";
+
+
+
+
+
+
+
+// =====================
+// HOME
 // =====================
 
 
@@ -383,8 +648,6 @@ content = `
 
 
 <h1>💖 FULL OUT</h1>
-
-
 
 
 
@@ -411,8 +674,6 @@ ${userData.xp}/${userData.xpToNextLevel} XP
 
 
 
-
-
 <div class="card">
 
 
@@ -427,47 +688,6 @@ ${userData.streak} Days
 
 
 </div>
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h2>🔥 Daily Check-In</h2>
-
-
-
-<p>
-
-Complete your UpLift day to grow your streak!
-
-</p>
-
-
-
-
-
-<button onclick="completeUpLiftDay()">
-
-
-
-🔥 Complete UpLift Day
-
-
-
-</button>
-
-
-
-
-</div>
-
-
 
 
 
@@ -615,7 +835,6 @@ ${userData.waterToday}/${userData.waterGoal} cups
 
 
 
-
 <button onclick="resetWater()">
 
 Reset
@@ -687,8 +906,6 @@ placeholder="Calories"
 
 
 
-
-
 <textarea
 
 id="foodNote"
@@ -704,19 +921,15 @@ placeholder="Notes"
 
 
 
-
 <button onclick="addNutritionFood()">
 
-
 ➕ Add To Diary
-
 
 </button>
 
 
 
 </div>
-
 
 
 
@@ -738,11 +951,529 @@ Your food history is saved in your Diary.
 
 
 
-
 <button onclick="showPage('diary')">
 
-
 Open Diary
+
+</button>
+
+
+
+</div>
+
+
+
+`;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================
+// DIARY PAGE
+// =====================
+
+
+if(page === "diary"){
+
+
+
+const selected =
+
+userData.selectedDiaryDate ||
+
+new Date().toLocaleDateString();
+
+
+
+
+
+const entries =
+
+getDiaryByDate(selected);
+
+
+
+
+
+
+content = `
+
+
+
+<h1>📖 Athlete Diary</h1>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<button onclick="changeDiaryDate(-1)">
+
+⬅️
+
+</button>
+
+
+
+
+<button onclick="resetDiaryDate()">
+
+Today
+
+</button>
+
+
+
+
+
+<button onclick="changeDiaryDate(1)">
+
+➡️
+
+</button>
+
+
+
+
+
+<h2>
+
+${selected}
+
+</h2>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+${
+
+entries.length === 0
+
+
+
+?
+
+
+
+`
+
+<h3>
+
+🌱 Nothing logged this day
+
+</h3>
+
+`
+
+
+
+:
+
+
+
+entries.map(entry=>`
+
+
+
+<div class="diary-entry">
+
+
+
+<h3>
+
+
+${
+
+entry.type === "nutrition"
+
+?
+
+"🥗"
+
+:
+
+entry.type === "workout"
+
+?
+
+"💪"
+
+:
+
+"⭐"
+
+}
+
+
+${entry.title}
+
+
+</h3>
+
+
+
+
+
+<p>
+
+${entry.details}
+
+</p>
+
+
+
+
+
+
+<p>
+
+⭐ +${entry.xp} XP
+
+</p>
+
+
+
+</div>
+
+
+
+`).join("")
+
+
+
+}
+
+
+
+</div>
+
+
+
+`;
+
+
+
+}
+    // =====================
+// TRAINING PAGE
+// =====================
+
+
+if(page === "training"){
+
+
+
+const days = [
+
+"Sunday",
+
+"Monday",
+
+"Tuesday",
+
+"Wednesday",
+
+"Thursday",
+
+"Friday",
+
+"Saturday"
+
+];
+
+
+
+const today = days[new Date().getDay()];
+
+
+
+
+
+if(userData.mode === "Vacation"){
+
+
+
+content = `
+
+
+
+<h1>🤍 Vacation Workout</h1>
+
+
+
+<div class="card">
+
+
+${vacationWorkouts.workout.map(item=>`
+
+
+
+<label class="workout-item">
+
+
+<input
+
+type="checkbox"
+
+${userData.completedToday.includes(item) ? "checked":""}
+
+onchange="completeWorkout('${item}')"
+
+
+
+>
+
+
+<span>${item}</span>
+
+
+</label>
+
+
+
+`).join("")}
+
+
+
+</div>
+
+
+
+`;
+
+
+
+}
+
+
+
+else{
+
+
+
+const workout = dailyWorkouts[today];
+
+
+
+content = `
+
+
+
+<h1>💪 Today's Workout</h1>
+
+
+<h2>${today}</h2>
+
+
+
+
+
+
+<div class="card">
+
+
+<h3>🌅 Morning</h3>
+
+
+
+${workout.morning.map(item=>`
+
+
+
+<label class="workout-item">
+
+
+<input
+
+type="checkbox"
+
+${userData.completedToday.includes(item) ? "checked":""}
+
+onchange="completeWorkout('${item}')"
+
+
+
+>
+
+
+
+<span>${item}</span>
+
+
+
+</label>
+
+
+
+`).join("")}
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h3>🌙 Night</h3>
+
+
+
+${workout.nighttime.map(item=>`
+
+
+
+<label class="workout-item">
+
+
+<input
+
+type="checkbox"
+
+${userData.completedToday.includes(item) ? "checked":""}
+
+onchange="completeWorkout('${item}')"
+
+
+
+>
+
+
+
+<span>${item}</span>
+
+
+
+</label>
+
+
+
+`).join("")}
+
+
+
+</div>
+
+
+
+`;
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================
+// PROFILE PAGE
+// =====================
+
+
+if(page === "profile"){
+
+
+
+if(!userData.profileCreated){
+
+
+
+content = `
+
+
+
+<h1>👤 Create Profile</h1>
+
+
+
+
+<div class="card">
+
+
+<input
+
+id="profileName"
+
+placeholder="Name"
+
+>
+
+
+
+
+<select id="athleteType">
+
+
+<option>Cheer Athlete</option>
+
+
+<option>Strength Athlete</option>
+
+
+<option>Flexibility Athlete</option>
+
+
+</select>
+
+
+
+
+
+
+<input
+
+id="goal"
+
+placeholder="Goal"
+
+>
+
+
+
+
+<button onclick="createProfile()">
+
+
+Save Profile
 
 
 </button>
@@ -758,7 +1489,524 @@ Open Diary
 
 
 }
-    
+
+
+
+else{
+
+
+
+content = `
+
+
+
+<h1>👤 Profile</h1>
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+
+${userData.profileName}
+
+</h2>
+
+
+
+<p>
+
+🤸 ${userData.athleteType}
+
+</p>
+
+
+
+<p>
+
+🎯 ${userData.goal}
+
+</p>
+
+
+
+<p>
+
+📅 Joined ${userData.profileDate}
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>📊 Training Stats</h2>
+
+
+
+<p>
+
+💪 Total Workouts:
+
+${userData.workoutsCompleted}
+
+</p>
+
+
+
+<hr>
+
+
+
+
+<p>
+
+🔥 Core:
+
+${userData.coreWorkouts}
+
+</p>
+
+
+
+<p>
+
+🏋️ Strength:
+
+${userData.strengthWorkouts}
+
+</p>
+
+
+
+<p>
+
+🤸 Backspot:
+
+${userData.backspotWorkouts}
+
+</p>
+
+
+
+<p>
+
+🩰 Flexibility:
+
+${userData.flexibilitySessions}
+
+</p>
+
+
+
+<p>
+
+🦵 Lower Body:
+
+${userData.lowerBodyWorkouts}
+
+</p>
+
+
+
+<p>
+
+💪 Upper Body:
+
+${userData.upperBodyWorkouts}
+
+</p>
+
+
+
+<p>
+
+⬆️ Jump Sessions:
+
+${userData.jumpSessions}
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>⭐ Progress</h2>
+
+
+
+<p>
+
+Level:
+
+${userData.level}
+
+</p>
+
+
+
+<p>
+
+XP:
+
+${userData.xp}/${userData.xpToNextLevel}
+
+</p>
+
+
+
+<p>
+
+🥗 Nutrition XP:
+
+${userData.nutritionXP}
+
+</p>
+
+
+
+<p>
+
+📖 Diary Entries:
+
+${userData.diaryEntries.length}
+
+</p>
+
+
+
+</div>
+
+
+
+`;
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================
+// TROPHY ROOM
+// =====================
+
+
+if(page === "badges"){
+
+
+
+const earned =
+
+userData.unlockedBadges.length;
+
+
+
+const total =
+
+Object.keys(badges).length;
+
+
+
+
+
+
+content = `
+
+
+
+<h1>🏆 Trophy Room</h1>
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+
+🏅 ${earned}/${total}
+
+</h2>
+
+
+<p>
+
+Badges Earned
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="badge-gallery">
+
+
+
+${Object.keys(badges).map(id=>{
+
+
+const badge = badges[id];
+
+
+const unlocked =
+
+userData.unlockedBadges.includes(id);
+
+
+
+
+return `
+
+
+
+<div class="badge-card ${unlocked ? "unlocked":"locked"}">
+
+
+<h2>
+
+${unlocked ? badge.icon:"🔒"}
+
+</h2>
+
+
+
+
+<h3>
+
+${unlocked ? badge.name:"Locked Badge"}
+
+</h3>
+
+
+
+
+<p>
+
+${badge.description}
+
+</p>
+
+
+
+<p>
+
+⭐ ${badge.rarity}
+
+</p>
+
+
+
+</div>
+
+
+
+`;
+
+
+
+}).join("")}
+
+
+
+</div>
+
+
+
+`;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// =====================
+// SETTINGS PAGE
+// =====================
+
+
+if(page === "settings"){
+
+
+
+content = `
+
+
+
+<h1>⚙️ Settings</h1>
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>🌈 App Mode</h2>
+
+
+
+
+<button onclick="changeMode('Regular')">
+
+💖 Regular
+
+</button>
+
+
+
+
+
+<button onclick="changeMode('Vacation')">
+
+🤍 Vacation
+
+</button>
+
+
+
+
+
+<button onclick="changeMode('Period')">
+
+❤️ Period
+
+</button>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>🥗 Nutrition Support</h2>
+
+
+
+<label>
+
+
+<input
+
+type="checkbox"
+
+${userData.arfidSupport ? "checked":""}
+
+onclick="toggleARFID()"
+
+
+
+>
+
+
+ARFID Support Mode
+
+
+</label>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+<button onclick="resetProgress()">
+
+
+Reset Progress
+
+
+</button>
+
+
+
+</div>
+
+
+
+`;
+
+
+
+}
+
+
+
+
+
+
+
+
+
 // =====================
 // BOTTOM NAV
 // =====================
@@ -781,13 +2029,11 @@ app.innerHTML = content + `
 
 
 
-
 <button onclick="showPage('training')">
 
 💪
 
 </button>
-
 
 
 
@@ -801,13 +2047,11 @@ app.innerHTML = content + `
 
 
 
-
 <button onclick="showPage('diary')">
 
 📖
 
 </button>
-
 
 
 
@@ -821,13 +2065,11 @@ app.innerHTML = content + `
 
 
 
-
 <button onclick="showPage('profile')">
 
 👤
 
 </button>
-
 
 
 
@@ -849,9 +2091,6 @@ app.innerHTML = content + `
 
 
 }
-
-
-
 
 
 
