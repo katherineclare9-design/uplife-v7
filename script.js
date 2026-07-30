@@ -1877,13 +1877,7 @@ Badges Earned
 ${categories.map(category=>`
 
 <button
-class="${
-selected===category
-?
-"active-tab"
-:
-""
-}"
+class="${selected===category ? "active-tab" : ""}"
 onclick="changeBadgeCategory('${category}')">
 
 ${category}
