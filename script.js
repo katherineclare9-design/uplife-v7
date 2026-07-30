@@ -1788,15 +1788,33 @@ if(page === "badges"){
 
 
 const earned =
-
 userData.unlockedBadges.length;
 
-
-
 const total =
-
 Object.keys(badges).length;
 
+const categories = [
+
+    "Getting Started",
+
+    "Streak",
+
+    "Core",
+
+    "Strength",
+
+    "Flexibility",
+
+    "Nutrition",
+
+    "Diary",
+
+    "Special"
+
+];
+
+const selected =
+userData.selectedBadgeCategory || "Getting Started";
 
 
 
@@ -1839,47 +1857,58 @@ Badges Earned
 
 
 
+<div class="badge-tabs">
+
+${categories.map(category=>`
+
+<button
+class="${
+selected===category
+?
+"active-tab"
+:
+""
+}"
+onclick="changeBadgeCategory('${category}')">
+
+${category}
+
+</button>
+
+`).join("")}
+
+</div>
+
+
+
 <div class="badge-gallery">
 
+${Object.keys(badges)
 
+.filter(id=>badges[id].category===selected)
 
-${Object.keys(badges).map(id=>{
-
+.map(id=>{
 
 const badge = badges[id];
 
-
 const unlocked =
-
 userData.unlockedBadges.includes(id);
-
-
-
 
 return `
 
-
-
 <div class="badge-card ${unlocked ? "unlocked":"locked"}">
-
 
 <h2>
 
-${unlocked ? badge.icon:"🔒"}
+${unlocked ? badge.icon : "🔒"}
 
 </h2>
 
-
-
-
 <h3>
 
-${unlocked ? badge.name:"Locked Badge"}
+${unlocked ? badge.name : "Locked Badge"}
 
 </h3>
-
-
-
 
 <p>
 
@@ -1887,27 +1916,17 @@ ${badge.description}
 
 </p>
 
-
-
 <p>
 
 ⭐ ${badge.rarity}
 
 </p>
 
-
-
 </div>
-
-
 
 `;
 
-
-
 }).join("")}
-
-
 
 </div>
 
