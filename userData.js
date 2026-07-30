@@ -1,6 +1,6 @@
- // =====================
-// UpLift User Data v5.0
-// Nutrition + Athlete Diary Upgrade
+// =====================
+// UpLift User Data v5.1
+// Streak System Upgrade
 // =====================
 
 
@@ -42,7 +42,6 @@ arfidSupport:false,
 
 
 
-
 // =====================
 // XP + LEVEL SYSTEM
 // =====================
@@ -54,8 +53,14 @@ level:1,
 
 xpToNextLevel:100,
 
+
+// DAILY STREAK
+
 streak:0,
 
+lastStreakDate:"",
+
+dayCompleted:false,
 
 
 
@@ -108,6 +113,7 @@ jumpSessions:0,
 
 
 
+
 // =====================
 // BADGES
 // =====================
@@ -126,50 +132,38 @@ badgeDates:{},
 
 
 
+
 // =====================
 // NUTRITION SYSTEM
 // =====================
 
 
-// calories logged today
-
 caloriesToday:0,
 
-
-
-// water tracking
 
 waterToday:0,
 
 waterGoal:8,
 
 
-
-// every food entry
-
 nutritionEntries:[],
 
-
-
-// quick add meals
 
 savedMeals:[],
 
 
-
-// ARFID support lists
-
 safeFoods:[],
 
+
 favoriteFoods:[],
+
 
 foodsToTry:[],
 
 
-
-// notes
-
 nutritionNotes:"",
+
+
 
 
 
@@ -182,26 +176,12 @@ nutritionNotes:"",
 // =====================
 
 
-// Every important action goes here
-//
-// Example:
-//
-// {
-//   date:"7/29/2026",
-//   type:"nutrition",
-//   title:"Chicken Bowl",
-//   details:"600 calories",
-//   xp:10
-// }
-
-
 diaryEntries:[],
 
 
-
-// Allows date selection later
-
 selectedDiaryDate:"",
+
+
 
 
 
@@ -226,6 +206,10 @@ lastNutritionDate:""
 
 
 };
+
+
+
+
 // =====================
 // LOAD USER DATA
 // =====================
@@ -242,10 +226,8 @@ let userData = JSON.parse(
 
 
 
-
 // =====================
 // ADD MISSING FIELDS
-// Keeps old saves working
 // =====================
 
 
@@ -262,19 +244,13 @@ for(const key in defaultUserData){
 
 
 }
-
-
-
-
-
-
-
 // =====================
 // DAILY RESET CHECK
 // =====================
 
 
 const today = new Date().toLocaleDateString();
+
 
 
 
@@ -296,6 +272,8 @@ if(userData.completedDate !== today){
 
 
 }
+
+
 
 
 
@@ -331,6 +309,7 @@ if(userData.lastNutritionDate !== today){
 
 
 
+
 // =====================
 // SAVE USER DATA
 // =====================
@@ -358,6 +337,8 @@ function saveUserData(){
 
 
 
+
+
 // =====================
 // XP SYSTEM
 // =====================
@@ -368,6 +349,7 @@ function addXP(amount){
 
 
     userData.xp += amount;
+
 
 
 
@@ -400,61 +382,131 @@ function addXP(amount){
 
 
 
+
+
 // =====================
-// DIARY DATA FORMAT
-// =====================
-//
-// Every entry uses:
-//
-// {
-//   date:"7/29/2026",
-//   type:"nutrition",
-//   title:"Chicken Bowl",
-//   details:"600 calories",
-//   xp:10
-// }
-//
-// Types:
-// nutrition
-// workout
-// achievement
-// note
-//
-// =====================
-// =====================
-// DIARY SYSTEM
+// DAILY STREAK SYSTEM
 // =====================
 
 
-function addDiaryEntry(
-    type,
-    title,
-    details,
-    xp = 0
-){
+function completeUpLiftDay(){
 
 
 
-    userData.diaryEntries.push({
-
-
-        date:new Date().toLocaleDateString(),
-
-
-        type:type,
-
-
-        title:title,
-
-
-        details:details,
-
-
-        xp:xp
+    const today = new Date().toLocaleDateString();
 
 
 
-    });
+
+
+    // Prevent double completing same day
+
+    if(userData.lastStreakDate === today){
+
+
+        return;
+
+
+    }
+
+
+
+
+
+
+
+
+    const yesterday = new Date();
+
+
+
+    yesterday.setDate(
+
+        yesterday.getDate() - 1
+
+    );
+
+
+
+
+
+    const yesterdayString =
+
+    yesterday.toLocaleDateString();
+
+
+
+
+
+
+
+
+
+    if(userData.lastStreakDate === yesterdayString){
+
+
+
+        userData.streak++;
+
+
+
+    }
+
+    else{
+
+
+
+        userData.streak = 1;
+
+
+
+    }
+
+
+
+
+
+
+
+
+    userData.lastStreakDate = today;
+
+
+
+    userData.dayCompleted = true;
+
+
+
+
+
+
+
+
+    addXP(25);
+
+
+
+
+
+
+
+
+    addDiaryEntry(
+
+        "achievement",
+
+        "UpLift Day Completed",
+
+        "Daily streak increased",
+
+        25
+
+    );
+
+
+
+
+
 
 
 
@@ -470,13 +522,105 @@ function addDiaryEntry(
 
 
 
+
+
+
+
+
+// =====================
+// DIARY DATA FORMAT
+// =====================
+//
+// {
+// date:"7/29/2026",
+// type:"nutrition",
+// title:"Chicken Bowl",
+// details:"600 calories",
+// xp:10
+// }
+//
+// Types:
+// nutrition
+// workout
+// achievement
+// note
+//
+// =====================
+
+
+
+
+
+
+function addDiaryEntry(
+
+    type,
+
+    title,
+
+    details,
+
+    xp = 0
+
+){
+
+
+
+    userData.diaryEntries.push({
+
+
+
+        date:new Date().toLocaleDateString(),
+
+
+
+        type:type,
+
+
+
+        title:title,
+
+
+
+        details:details,
+
+
+
+        xp:xp
+
+
+
+    });
+
+
+
+
+
+    saveUserData();
+
+
+
+}
+
+
+
+
+
+
+
+
+
 function getDiaryByDate(date){
 
 
 
     return userData.diaryEntries.filter(entry =>
 
+
+
         entry.date === date
+
+
 
     );
 
@@ -490,23 +634,32 @@ function getDiaryByDate(date){
 
 
 
+
+
 function getAvailableDiaryDates(){
 
 
 
     return [
 
+
         ...new Set(
+
 
             userData.diaryEntries.map(entry => entry.date)
 
+
         )
+
 
     ];
 
 
 
 }
+
+
+
 
 
 
@@ -527,11 +680,13 @@ function addNutritionXP(amount){
     userData.nutritionXP += amount;
 
 
+
     addXP(amount);
 
 
 
 }
+
 
 
 
@@ -554,13 +709,18 @@ function addNutritionEntry(entry){
 
 
 
+
+
     addDiaryEntry(
+
 
 
         "nutrition",
 
 
+
         entry.food,
+
 
 
         `${entry.calories} calories${
@@ -578,10 +738,14 @@ function addNutritionEntry(entry){
         }`,
 
 
+
         10
 
 
+
     );
+
+
 
 
 
@@ -595,11 +759,13 @@ function addNutritionEntry(entry){
 
 
 
+
     saveUserData();
 
 
 
 }
+
 
 
 
@@ -623,19 +789,26 @@ function addWater(){
         addDiaryEntry(
 
 
+
             "nutrition",
+
 
 
             "Water Added",
 
 
+
             "Drank 1 cup of water",
+
 
 
             5
 
 
+
         );
+
+
 
 
 
@@ -648,17 +821,13 @@ function addWater(){
 
 
 
+
+
     saveUserData();
 
 
 
 }
-
-
-
-
-
-
 
 // =====================
 // SAVED MEALS
@@ -708,6 +877,8 @@ function saveMeal(meal){
 
 
 
+
+
 function addSavedMeal(index){
 
 
@@ -718,9 +889,13 @@ function addSavedMeal(index){
 
     if(!meal){
 
+
         return;
 
+
     }
+
+
 
 
 
@@ -733,10 +908,13 @@ function addSavedMeal(index){
         food:meal.food,
 
 
+
         calories:meal.calories,
 
 
+
         meal:meal.meal || "Saved Meal",
+
 
 
         note:"Added from saved meals"
@@ -756,6 +934,10 @@ function addSavedMeal(index){
 
 
 
+
+
+
+
 // =====================
 // NUTRITION STREAK
 // =====================
@@ -766,6 +948,8 @@ function updateNutritionStreak(){
 
 
     const today = new Date().toLocaleDateString();
+
+
 
 
 
@@ -790,6 +974,9 @@ function updateNutritionStreak(){
 
 
 }
+
+
+
 
 
 
@@ -824,6 +1011,9 @@ function resetProgress(){
 
 
 
+
+
+
     userData.xp = 0;
 
 
@@ -834,6 +1024,14 @@ function resetProgress(){
 
 
     userData.streak = 0;
+
+
+    userData.lastStreakDate = "";
+
+
+    userData.dayCompleted = false;
+
+
 
 
 
@@ -847,6 +1045,8 @@ function resetProgress(){
 
 
     userData.completedDate = "";
+
+
 
 
 
@@ -879,10 +1079,14 @@ function resetProgress(){
 
 
 
+
+
     userData.unlockedBadges = [];
 
 
     userData.badgeDates = {};
+
+
 
 
 
@@ -913,6 +1117,8 @@ function resetProgress(){
 
 
 
+
+
     userData.diaryEntries = [];
 
 
@@ -923,7 +1129,10 @@ function resetProgress(){
 
 
 
+
+
     saveUserData();
+
 
 
 
